@@ -1,0 +1,48 @@
+name: reviewdog
+"on":
+  push:
+    branches:
+      - main
+      - '*'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '43 17 * * 1'
+permissions:
+  contents: read
+jobs:
+  reviewdog-pr-review:
+    name: Run reviewdog
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
+      - name: Setup env for PR
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: echo "REVIEWDOG_REPORTER=github-pr-check" >> "$GITHUB_ENV"
+      - name: Setup env for everything else
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "REVIEWDOG_REPORTER=github-check" >> "$GITHUB_ENV"
+      - name: Run actionlint
+        if: always()
+        uses: reviewdog/action-actionlint@27d0c61b30330b94d7d2c2fa88d22c3b2cc5e866 # ratchet:reviewdog/action-actionlint@v1
+        with:
+          reporter: ${{ env.REVIEWDOG_REPORTER }}
+      - name: Run yamllint
+        if: always()
+        uses: reviewdog/action-yamllint@c5a0c559f09938e902466526c71441f1de2e603b # ratchet:reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: ${{ env.REVIEWDOG_REPORTER }}
+      - name: Run shellcheck
+        if: always()
+        uses: reviewdog/action-shellcheck@66c9a47bf02255b250284a82251cb4cadf5043f5 # ratchet:reviewdog/action-shellcheck@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: ${{ env.REVIEWDOG_REPORTER }}
