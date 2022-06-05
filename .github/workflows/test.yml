@@ -1,0 +1,16 @@
+name: Test
+"on":
+  pull_request:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Test action against ourselves
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
+      - name: Run action
+        uses: ./
