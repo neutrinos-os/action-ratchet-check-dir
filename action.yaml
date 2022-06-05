@@ -1,0 +1,22 @@
+name: action-ratchet-check-dir
+
+author: "@neutrinos-os"
+
+description: |
+  Runs [`ratchet check`](https://github.com/sethvargo/ratchet) over a directory of workflows.
+
+inputs:
+  directory:
+    description: The directory containing workflow yml files
+    required: true
+    default: ./.github/workflows/
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.directory }}
+
+branding:
+  color: gray-dark
+  icon: check-square
