@@ -46,3 +46,9 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ env.REVIEWDOG_REPORTER }}
+      - name: Run hadolint
+        if: always()
+        uses: reviewdog/action-hadolint@55be5d2c4b0b80d439247b128a9ded3747f92a29 # ratchet:reviewdog/action-hadolint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: ${{ env.REVIEWDOG_REPORTER }}
