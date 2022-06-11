@@ -8,4 +8,4 @@ rules:
   # ratchet pin removes document start
   document-start: disable
   line-length:
-    max: 140
+    max: 150
