@@ -7,17 +7,15 @@ name: reviewdog
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '43 17 * * 1'
 permissions:
   contents: read
+concurrency:
+  group: '${{ github.workflow }}-${{ github.head_ref || github.ref }}'
+  cancel-in-progress: true
 jobs:
   reviewdog-pr-review:
     name: Run reviewdog
     runs-on: ubuntu-latest
-    permissions:
-      contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
     steps:
       - name: Checkout code
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
